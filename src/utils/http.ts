@@ -140,7 +140,7 @@ const request = async <Response>(
     }
   }
   if (isClient) {
-    // chỉ chạy ở client
+    // chỉ chạy ở client - route này là route handler của nextjs
     if (["api/auth/login"].some((item) => item === normalizePath(url))) {
       const { accessToken, refreshToken } = (payload as LoginResType).data;
       localStorage.setItem("accessToken", accessToken);
