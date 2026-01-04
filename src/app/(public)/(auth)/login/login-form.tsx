@@ -12,10 +12,17 @@ import { toast } from "sonner";
 import { handleErrorApi } from "@/lib/utils";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
+  /**
+   *  1. Client component gọi api login route handler là `/auth/login`
+      2. Route handler này sẽ gọi tiếp api login đến Server Backend để nhận về token, sau đó lưu token vào cookie client, cuối cùng trả kết quả về cho client component
+      Gọi là dùng `Next.js Server` làm `proxy trung gian`
+   */
 
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const loginMutation = useLoginMutation();
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
@@ -30,6 +37,7 @@ export default function LoginForm() {
     try {
       const result = await loginMutation.mutateAsync(data);
       toast.success(result.payload.message);
+      router.push("/manage/dashboard");
     } catch (error) {
       handleErrorApi({
         errors: error,
