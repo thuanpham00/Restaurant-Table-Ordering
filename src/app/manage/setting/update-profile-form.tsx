@@ -11,14 +11,20 @@ import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useGetMeQuery } from "@/queries/useAccount";
+import { useGetMeQuery, useUpdateMeMutation } from "@/queries/useAccount";
+import { useUploadMutation } from "@/queries/useMedia";
+import { useQueryClient } from "@tanstack/react-query";
+import { handleErrorApi } from "@/lib/utils";
 
 export default function UpdateProfileForm() {
+  const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { data } = useGetMeQuery({
-    queryKey: "update-profile-me",
+    queryKey: "profile-me",
   });
+  const updateMeFormMutation = useUpdateMeMutation();
+  const uploadMutation = useUploadMutation();
 
   const [file, setFile] = useState<File | null>(null);
   const form = useForm<UpdateMeBodyType>({
@@ -33,7 +39,7 @@ export default function UpdateProfileForm() {
     if (data) {
       form.reset({
         name: data.payload.data.name,
-        avatar: data.payload.data.avatar ?? "",
+        avatar: data.payload.data.avatar ?? undefined,
       });
     }
   }, [data]);
@@ -56,9 +62,53 @@ export default function UpdateProfileForm() {
   const avatarForm = form.watch("avatar");
   const avatarPreview = file ? URL.createObjectURL(file) : avatarForm;
 
+  const reset = () => {
+    setFile(null);
+    form.reset(); // quay lại giá trị từ defaultValues hoặc giá trị đã load
+  };
+
+  const submit = async (values: UpdateMeBodyType) => {
+    if (updateMeFormMutation.isPending) return;
+    let body = values;
+    try {
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const { payload } = await uploadMutation.mutateAsync(formData);
+        const urlAvatar = payload.data;
+        body = {
+          ...values,
+          avatar: urlAvatar,
+        };
+      }
+      await updateMeFormMutation.mutateAsync(body);
+      toast.success("Cập nhật thông tin thành công", {
+        duration: 2000,
+      });
+      queryClient.invalidateQueries({ queryKey: ["profile-me"] });
+      /**
+       * Nếu cùng queryKey → invalidate/refetch = 1 request, share cho tất cả component.
+         Nếu khác queryKey → mỗi query là 1 request riêng, invalidate cũng chỉ tác động đúng queryKey bạn chọn.
+       */
+      setFile(null);
+    } catch (error) {
+      handleErrorApi({
+        errors: error,
+        setError: form.setError,
+      });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form noValidate className="grid auto-rows-max items-start gap-4 md:gap-8">
+      <form
+        noValidate
+        className="grid auto-rows-max items-start gap-4 md:gap-8"
+        onReset={reset}
+        onSubmit={form.handleSubmit(submit, (err) => {
+          console.log(err);
+        })}
+      >
         <Card x-chunk="dashboard-07-chunk-0">
           <CardHeader>
             <CardTitle>Thông tin cá nhân</CardTitle>
@@ -83,7 +133,10 @@ export default function UpdateProfileForm() {
                         onClick={(e) => {
                           (e.target as any).value = null;
                         }}
-                        onChange={handleChangeFile}
+                        onChange={(e) => {
+                          handleChangeFile(e);
+                          field.onChange("http://localhost:3000/", field.name); // skip validate zod
+                        }}
                       />
                       <button
                         className="flex aspect-square w-25 items-center justify-center rounded-md border border-dashed"

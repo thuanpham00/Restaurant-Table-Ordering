@@ -40,6 +40,14 @@ export const getAccessTokenFromLocalStorage = () => {
   return isClient ? localStorage.getItem("accessToken") : null;
 };
 
+export const setAccessTokenFromLocalStorage = (value: string) => {
+  return isClient && localStorage.setItem("accessToken", value);
+};
+
 export const getRefreshTokenFromLocalStorage = () => {
   return isClient ? localStorage.getItem("refreshToken") : null;
+};
+
+export const setRefreshTokenFromLocalStorage = (value: string) => {
+  return isClient && localStorage.setItem("refreshToken", value);
 };

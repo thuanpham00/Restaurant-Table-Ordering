@@ -20,7 +20,7 @@ export default function DropdownAvatar() {
   const logoutMutation = useLogoutMutation();
 
   const { data } = useGetMeQuery({
-    queryKey: "dropdown-avatar-me",
+    queryKey: "profile-me",
   });
   const account = data?.payload.data;
 

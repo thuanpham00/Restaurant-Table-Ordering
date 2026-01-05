@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import NavItems from "@/app/(public)/nav-items";
+import Image from "next/image";
 
 export default function Layout({
   children,
@@ -22,8 +23,15 @@ export default function Layout({
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link href="/" className="flex items-center gap-2 text-lg font-semibold md:text-base">
-            <Package2 className="h-6 w-6" />
-            <span className="sr-only">Big boy</span>
+            <Image
+              src="/images/logo.png"
+              alt="Logo"
+              width={128}
+              height={128}
+              quality={100}
+              className="h-10 w-10 object-contain "
+            />
+            <span className="sr-only">Smart Restaurant</span>
           </Link>
           <NavItems className="transition-colors hover:text-foreground shrink-0 text-black dark:text-white" />
         </nav>

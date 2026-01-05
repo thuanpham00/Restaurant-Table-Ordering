@@ -1,83 +1,109 @@
-'use client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+"use client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-import { useForm } from 'react-hook-form'
-import { ChangePasswordBody, ChangePasswordBodyType } from '@/schemaValidations/account.schema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { useForm } from "react-hook-form";
+import {
+  ChangePasswordBody,
+  ChangePasswordBodyType,
+  ChangePasswordV2BodyType,
+} from "@/schemaValidations/account.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import InputPassword from "@/app/manage/setting/input-password";
+import { useChangePasswordMutation } from "@/queries/useAccount";
+import { toast } from "sonner";
+import { handleErrorApi, setAccessTokenFromLocalStorage, setRefreshTokenFromLocalStorage } from "@/lib/utils";
 
 export default function ChangePasswordForm() {
+  const changePasswordFormMutation = useChangePasswordMutation();
   const form = useForm<ChangePasswordBodyType>({
     resolver: zodResolver(ChangePasswordBody),
     defaultValues: {
-      oldPassword: '',
-      password: '',
-      confirmPassword: ''
+      oldPassword: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const reset = () => {
+    form.reset();
+  };
+
+  const submit = async (values: ChangePasswordV2BodyType) => {
+    if (changePasswordFormMutation.isPending) return;
+    try {
+      const { payload } = await changePasswordFormMutation.mutateAsync(values);
+      setAccessTokenFromLocalStorage(payload.data.accessToken);
+      setRefreshTokenFromLocalStorage(payload.data.refreshToken);
+
+      toast.success("Đổi mật khẩu thành công", {
+        duration: 2000,
+      });
+      reset();
+    } catch (error) {
+      handleErrorApi({
+        errors: error,
+        setError: form.setError,
+      });
     }
-  })
+  };
 
   return (
     <Form {...form}>
-      <form noValidate className='grid auto-rows-max items-start gap-4 md:gap-8'>
-        <Card className='overflow-hidden' x-chunk='dashboard-07-chunk-4'>
+      <form
+        noValidate
+        className="grid auto-rows-max items-start gap-4 md:gap-8"
+        onReset={reset}
+        onSubmit={form.handleSubmit(submit, (err) => {
+          console.log(err);
+        })}
+      >
+        <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
           <CardHeader>
             <CardTitle>Đổi mật khẩu</CardTitle>
-            {/* <CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription> */}
           </CardHeader>
           <CardContent>
-            <div className='grid gap-6'>
+            <div className="grid gap-6">
               <FormField
                 control={form.control}
-                name='oldPassword'
+                name="oldPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <div className='grid gap-3'>
-                      <Label htmlFor='oldPassword'>Mật khẩu cũ</Label>
-                      <Input id='oldPassword' type='password' className='w-full' {...field} />
-                      <FormMessage />
-                    </div>
+                    <InputPassword field={field} label="Mật khẩu cũ" />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name='password'
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <div className='grid gap-3'>
-                      <Label htmlFor='password'>Mật khẩu mới</Label>
-                      <Input id='password' type='password' className='w-full' {...field} />
-                      <FormMessage />
-                    </div>
+                    <InputPassword field={field} label="Mật khẩu mới" />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name='confirmPassword'
+                name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <div className='grid gap-3'>
-                      <Label htmlFor='confirmPassword'>Nhập lại mật khẩu mới</Label>
-                      <Input id='confirmPassword' type='password' className='w-full' {...field} />
-                      <FormMessage />
-                    </div>
+                    <InputPassword field={field} label="Xác nhận mật khẩu mới" />
                   </FormItem>
                 )}
               />
-              <div className=' items-center gap-2 md:ml-auto flex'>
-                <Button variant='outline' size='sm'>
+              <div className=" items-center gap-2 md:ml-auto flex">
+                <Button variant="outline" size="sm">
                   Hủy
                 </Button>
-                <Button size='sm'>Lưu thông tin</Button>
+                <Button size="sm">Lưu thông tin</Button>
               </div>
             </div>
           </CardContent>
         </Card>
       </form>
     </Form>
-  )
+  );
 }

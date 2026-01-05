@@ -1,9 +1,10 @@
 import { accountApiRequests } from "@/apiRequests/account";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { ChangePasswordV2BodyType, UpdateMeBodyType } from "@/schemaValidations/account.schema";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetMeQuery = ({ queryKey }: { queryKey: string }) => {
   return useQuery({
-    queryKey: ["me", queryKey],
+    queryKey: [queryKey],
     queryFn: () => {
       return accountApiRequests.me().then((res) => {
         return res;
@@ -11,5 +12,21 @@ export const useGetMeQuery = ({ queryKey }: { queryKey: string }) => {
     },
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+};
+
+export const useUpdateMeMutation = () => {
+  return useMutation({
+    mutationFn: (body: UpdateMeBodyType) => {
+      return accountApiRequests.updateMe(body);
+    },
+  });
+};
+
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationFn: (body: ChangePasswordV2BodyType) => {
+      return accountApiRequests.changePassword_nextjs(body);
+    },
   });
 };

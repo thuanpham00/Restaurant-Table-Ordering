@@ -5,13 +5,13 @@ const privatePath = ["/manage"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionToken = request.cookies.get("accessToken")?.value;
+  const accessToken = request.cookies.get("accessToken")?.value;
 
-  if (privatePath.some((path) => pathname.startsWith(path)) && !sessionToken) {
+  if (privatePath.some((path) => pathname.startsWith(path)) && !accessToken) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (authPath.some((path) => pathname.startsWith(path)) && sessionToken) {
+  if (authPath.some((path) => pathname.startsWith(path)) && accessToken) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

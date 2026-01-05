@@ -1,7 +1,7 @@
 import { authRequests } from "@/apiRequests/auth";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { HttpError } from "@/utils/http";
+import { EntityError } from "@/utils/http";
 
 export const POST = async (request: Request) => {
   const body = await request.json();
@@ -30,13 +30,18 @@ export const POST = async (request: Request) => {
       expires: decodedRefreshToken.exp * 1000,
     });
     return Response.json(payload);
-  } catch (error) {
-    if (error instanceof HttpError) {
+  } catch (error: any) {
+    if (error instanceof EntityError) {
       return Response.json(error.payload, { status: error.status });
     } else {
-      return Response.json({
-        message: "Đã có lỗi xảy ra, vui lòng thử lại sau",
-      });
+      return Response.json(
+        {
+          message: "Đã có lỗi xảy ra, vui lòng thử lại sau",
+        },
+        {
+          status: error.status ?? 500,
+        }
+      );
     }
   }
 };
