@@ -33,3 +33,7 @@ Logout flow tương tự: Client component (next client) -> route handler (next 
 - Check accessToken liên tục để refresh token tránh để AT hết hạn -> component `refresh-token`
   + Nếu RT còn hạn thì xử lý refresh Token - gán AT và RT mới vào cookie và LocalStorage
   + Nếu RT hết hạn thì logout
+
+- Nếu lâu ngày không truy cập website 
+ + Nếu RT còn hạn -> thì tương tự `logout case 2` load middleware đầu tiên redirect qua trang `/refresh-token` ...
+ + Nếu RT hết hạn 
