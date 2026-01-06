@@ -36,6 +36,7 @@ export default function NavItems({ className }: { className?: string }) {
   const [isAuth, setIsAuth] = useState<boolean>(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsAuth(Boolean(getAccessTokenFromLocalStorage()));
   }, []);
 
