@@ -16,7 +16,7 @@ export default function NavLinks() {
         <nav className="flex flex-col items-center gap-4 px-2 py-4">
           <Link
             href="/"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-16 md:w-16 md:text-base md:mb-4"
+            className="group flex shrink-0 items-center justify-center gap-2 p-2 rounded-full text-sm font-semibold md:text-base md:mb-4"
           >
             <Image
               src="/images/logo.png"
@@ -24,9 +24,9 @@ export default function NavLinks() {
               width={128}
               height={128}
               quality={100}
-              className="h-full w-full object-contain"
+              className="h-9 w-9 md:h-12 md:w-12 object-contain"
             />
-            <span className="sr-only">Smart Restaurant</span>
+            <span className="text-black dark:text-white">Smart Restaurant</span>
           </Link>
 
           {menuItems.map((Item, index) => {

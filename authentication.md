@@ -20,3 +20,8 @@ Tương tự với logout cũng vậy
 
 Ở Server Component nhận biết được login hay chưa thì dựa vào cookie mà browser gửi lên  
 Ở Client Component nhận biết được login hay chưa thì dựa vào local storage
+
+`Có 3 case xử lý logout`
+- Logout bình thường (ấn đăng xuất)
+- Logout khi accessToken trong cookie hết hạn - (middleware - dành cho khi AT hết hạn rồi load lại page) redirect qua trang /logout (xử lý logout bình thường) -> redirect về /login
+- Logout khi API lỗi trả về 401 - (http - xử lý cả ở client và ở server) 

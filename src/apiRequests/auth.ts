@@ -1,4 +1,10 @@
-import { LoginBodyType, LoginResType, LogoutBodyType } from "@/schemaValidations/auth.schema";
+import {
+  LoginBodyType,
+  LoginResType,
+  LogoutBodyType,
+  RefreshTokenBodyType,
+  RefreshTokenResType,
+} from "@/schemaValidations/auth.schema";
 import { MessageResType } from "@/schemaValidations/common.schema";
 import http from "@/utils/http";
 
@@ -33,5 +39,14 @@ export const authRequests = {
         },
       }
     );
+  },
+
+  refreshToken_nextjs: async () => {
+    return http.post<LoginResType>("/api/auth/refresh-token", null, {
+      baseUrl: "", // sử dụng baseUrl trống để gọi API nội bộ của Next.js
+    });
+  },
+  refreshToken_backend: async (data: RefreshTokenBodyType) => {
+    return http.post<RefreshTokenResType>(`/auth/refresh-token`, data);
   },
 };

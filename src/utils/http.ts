@@ -132,6 +132,7 @@ const request = async <Response>(
         }
       } else {
         // xử lý token hết hạn hoặc ko hợp lệ thì logout - xử lý ở server
+        // và chúng ta gọi API ở nextjs server (route handler, server component)
         const accessToken = (options?.headers as any)?.Authorization.split("Bearer ")[1];
         redirect(`/logout?accessToken=${accessToken}`); // chạy ở server
       }

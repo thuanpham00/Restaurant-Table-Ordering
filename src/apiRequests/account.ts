@@ -10,6 +10,13 @@ export const accountApiRequests = {
   me: () => {
     return http.get<AccountResType>("/accounts/me");
   },
+  me_next_server: (accessToken: string) => {
+    return http.get<AccountResType>("/accounts/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`, // vì ở server nên http sẽ ko tự động gán AT cần set thủ công
+      },
+    });
+  },
 
   updateMe: (body: UpdateMeBodyType) => {
     return http.put<AccountResType>("/accounts/me", body);
