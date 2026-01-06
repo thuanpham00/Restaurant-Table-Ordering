@@ -2,19 +2,31 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
-const tanstackPlugin = require("@tanstack/eslint-plugin-query");
-const tanstackRecommended =
-  tanstackPlugin && tanstackPlugin.configs && tanstackPlugin.configs.recommended
-    ? tanstackPlugin.configs.recommended
-    : {};
+import reactHooks from "eslint-plugin-react-hooks";
+import tanstackQuery from "@tanstack/eslint-plugin-query";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  tanstackRecommended,
-  // Override default ignores of eslint-config-next.
+
+  {
+    plugins: {
+      "react-hooks": reactHooks,
+      "@tanstack/query": tanstackQuery,
+    },
+
+    rules: {
+      // React Hooks
+      "react-hooks/exhaustive-deps": "warn",
+      "@typescript-eslint/no-unused-vars": "error",
+      // TanStack Query (React Query)
+      "@tanstack/query/exhaustive-deps": "warn",
+      "@tanstack/query/no-rest-destructuring": "warn",
+      "@tanstack/query/stable-query-client": "error",
+    },
+  },
+
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { authRequests } from "@/apiRequests/auth";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { EntityError } from "@/utils/http";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const POST = async (request: Request) => {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;

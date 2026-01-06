@@ -20,9 +20,10 @@ export function middleware(request: NextRequest) {
 
   // trường hợp đăng nhập rồi và AT trong cookie hết hạn
   if (privatePath.some((path) => pathname.startsWith(path)) && !accessToken && refreshToken) {
-    const url = new URL("/logout", request.url);
+    const url = new URL("/refresh-token", request.url);
     // xử lý case AT tại cookie bị xóa redirect sang /logout để xóa RT luôn và redirect sang /login
     url.searchParams.set("refreshToken", refreshToken ?? "");
+    url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 
