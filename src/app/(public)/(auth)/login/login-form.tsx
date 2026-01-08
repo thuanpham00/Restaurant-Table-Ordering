@@ -3,16 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm, UseFormSetError } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/queries/useAuth";
 import { toast } from "sonner";
 import { handleErrorApi } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAppContext } from "@/components/app-provider";
 
 export default function LoginForm() {
   /**
@@ -20,6 +21,9 @@ export default function LoginForm() {
       2. Route handler này sẽ gọi tiếp api login đến Server Backend để nhận về token, sau đó lưu token vào cookie client, cuối cùng trả kết quả về cho client component
       Gọi là dùng `Next.js Server` làm `proxy trung gian`
    */
+  const searchParams = useSearchParams();
+  const clearTokens = searchParams.get("clearTokens");
+  const { setIsAuth } = useAppContext();
 
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -40,6 +44,7 @@ export default function LoginForm() {
         duration: 2000,
       });
       router.push("/manage/dashboard");
+      setIsAuth(true);
     } catch (error) {
       handleErrorApi({
         errors: error,
@@ -47,6 +52,12 @@ export default function LoginForm() {
       });
     }
   };
+
+  useEffect(() => {
+    if (clearTokens) {
+      setIsAuth(false);
+    }
+  }, [clearTokens, setIsAuth]);
 
   return (
     <Card className="mx-auto md:max-w-md w-full mt-16">

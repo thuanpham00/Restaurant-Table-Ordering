@@ -9,8 +9,11 @@ export function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
   // trường hợp chưa đăng nhập thì ko vào được privatePath
+  // cũng dành cho trường hợp đã đăng nhập nhưng RT hết hạn rồi
   if (privatePath.some((path) => pathname.startsWith(path)) && !refreshToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const url = new URL("/login", request.url);
+    url.searchParams.set("clearTokens", "true");
+    return NextResponse.redirect(url);
   }
 
   // trường hợp đã đăng nhập rồi thì ko vào được login nữa

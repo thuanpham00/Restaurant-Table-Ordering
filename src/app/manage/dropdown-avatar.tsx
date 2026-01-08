@@ -14,10 +14,12 @@ import { useLogoutMutation } from "@/queries/useAuth";
 import { handleErrorApi } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useGetMeQuery } from "@/queries/useAccount";
+import { useAppContext } from "@/components/app-provider";
 
 // những trang cần login thì ko cần seo nên cứ gọi api ở client thoải mái
 export default function DropdownAvatar() {
   const logoutMutation = useLogoutMutation();
+  const { setIsAuth } = useAppContext();
 
   const { data } = useGetMeQuery({
     queryKey: "profile-me",
@@ -31,6 +33,7 @@ export default function DropdownAvatar() {
     try {
       await logoutMutation.mutateAsync();
       router.push("/");
+      setIsAuth(false);
     } catch (error) {
       handleErrorApi({
         errors: error,

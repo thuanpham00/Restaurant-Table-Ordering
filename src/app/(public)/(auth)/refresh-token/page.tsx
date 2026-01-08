@@ -20,6 +20,8 @@ export default function RefreshTokenPage() {
           router.push(redirectFromURL || "/");
         },
       });
+    } else {
+      router.push("/"); // nếu url ko đúng thì về trang chủ
     }
   }, [refreshTokenFromURL, redirectFromURL, router]);
   return <div>Refresh token page</div>;

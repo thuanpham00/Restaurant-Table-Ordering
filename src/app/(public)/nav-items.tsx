@@ -1,7 +1,6 @@
 "use client";
-import { getAccessTokenFromLocalStorage } from "@/lib/utils";
+import { useAppContext } from "@/components/app-provider";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 const menuItems = [
   {
@@ -33,13 +32,7 @@ const menuItems = [
 // hoặc là chuyển nav-items thành server component (cookie - mất static) sẽ không bị chớp giật UI
 
 export default function NavItems({ className }: { className?: string }) {
-  const [isAuth, setIsAuth] = useState<boolean>(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsAuth(Boolean(getAccessTokenFromLocalStorage()));
-  }, []);
-
+  const { isAuth } = useAppContext();
   // nếu check login ở server thì chỉ check bằng cookies() nhưng cookies() thì page sẽ thành dynamic function
   // dẫn đến các trang thành dynamic page hết
   // nếu là tránh việc này check ở client bằng localStorage như trên và chỉ chạy đoạn này ở client nếu chạy ở server thì null (dành cho build page)

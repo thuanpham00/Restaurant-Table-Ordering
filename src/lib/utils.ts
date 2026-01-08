@@ -70,7 +70,7 @@ export const checkAndRefreshToken = async (params?: { onError?: () => void; onSu
 
   // thời điểm hết hạn token là tính theo epoch time (s)
   // còn khi các bạn dùng cú pháp new Date().getTime() thì nó trả về epoch time (ms)
-  const now = new Date().getTime() / 1000; // chuyển về s
+  const now = (new Date().getTime() / 1000 ) - 1; // chuyển về s // khi set cookie với expires thì sẽ bị lệch 0 - 1000ms nên trừ thêm 1
 
   //trường hợp refresh token hết hạn thì cho logout
   if (decodedRefreshToken.exp <= now) {
