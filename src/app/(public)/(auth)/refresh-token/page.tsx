@@ -2,12 +2,12 @@
 
 import { checkAndRefreshToken, getRefreshTokenFromLocalStorage } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 // dành cho xử lý case lâu ngày không truy cập website: tại middleware khi phát hiện AT hết hạn trong cookie và RT còn hạn
 // sẽ redirect sang /refresh-token để refresh AT rồi redirect về trang ban đầu
 // tránh việc redirect sang /logout để xóa RT luôn và redirect
-export default function RefreshTokenPage() {
+function RefreshToken() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const refreshTokenFromURL = searchParams.get("refreshToken");
@@ -25,4 +25,12 @@ export default function RefreshTokenPage() {
     }
   }, [refreshTokenFromURL, redirectFromURL, router]);
   return <div>Refresh token page</div>;
+}
+
+export default function RefreshTokenPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RefreshToken />
+    </Suspense>
+  );
 }

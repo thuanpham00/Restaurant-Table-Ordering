@@ -1,9 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
 import { useForm } from "react-hook-form";
 import {
   ChangePasswordBody,
@@ -11,7 +8,7 @@ import {
   ChangePasswordV2BodyType,
 } from "@/schemaValidations/account.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormField, FormItem } from "@/components/ui/form";
 import InputPassword from "@/app/manage/setting/input-password";
 import { useChangePasswordMutation } from "@/queries/useAccount";
 import { toast } from "sonner";
@@ -72,7 +69,7 @@ export default function ChangePasswordForm() {
                 name="oldPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <InputPassword field={field} label="Mật khẩu cũ" />
+                    <InputPassword field={field} label="Mật khẩu cũ" controlLabel="oldPassword"/>
                   </FormItem>
                 )}
               />
@@ -81,7 +78,7 @@ export default function ChangePasswordForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <InputPassword field={field} label="Mật khẩu mới" />
+                    <InputPassword field={field} label="Mật khẩu mới" controlLabel="password" />
                   </FormItem>
                 )}
               />
@@ -90,7 +87,7 @@ export default function ChangePasswordForm() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <InputPassword field={field} label="Xác nhận mật khẩu mới" />
+                    <InputPassword field={field} label="Xác nhận mật khẩu mới" controlLabel="confirmPassword" />
                   </FormItem>
                 )}
               />

@@ -10,12 +10,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/queries/useAuth";
 import { toast } from "sonner";
 import { handleErrorApi } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/app-provider";
 
-export default function LoginForm() {
+function Login() {
   /**
    *  1. Client component gọi api login route handler là `/auth/login`
       2. Route handler này sẽ gọi tiếp api login đến Server Backend để nhận về token, sau đó lưu token vào cookie client, cuối cùng trả kết quả về cho client component
@@ -126,5 +126,14 @@ export default function LoginForm() {
         </Form>
       </CardContent>
     </Card>
+  );
+}
+
+// để fix lỗi useSearchParams từ nextjs thì dùng suspense bao ngoài
+export default function LoginForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Login />
+    </Suspense>
   );
 }

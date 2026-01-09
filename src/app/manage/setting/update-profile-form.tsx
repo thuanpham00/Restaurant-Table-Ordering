@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/incompatible-library */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +44,7 @@ export default function UpdateProfileForm() {
         avatar: data.payload.data.avatar ?? undefined,
       });
     }
-  }, [data]);
+  }, [data, form]);
 
   const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileFormLocal = e.target.files?.[0];
